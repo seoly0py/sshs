@@ -6,7 +6,7 @@ authors = ["seoly0 <seoly0.dev@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.8"
 paramiko = "^3.5.0"
 
 [tool.poetry.scripts]
