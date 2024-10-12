@@ -22,6 +22,42 @@ if [ -d "$HOME/.sshs" ]; then
     exit 1
 fi
 
+# CHECK VENV AVAILABLE
+PYTHON_VERSION=$(python3 --version 2>/dev/null)
+if ! python3 -m venv --help >/dev/null 2>&1; then
+    echo "venv is not available. Installing necessary packages..."
+    if [[ -f /etc/os-release ]]; then
+        source /etc/os-release
+        if [[ "$ID" == "ubuntu" || "$ID" == "debian" ]]; then
+            echo "Detected Debian/Ubuntu. Installing python3-venv..."
+            sudo apt update
+            sudo apt install -y python3-venv
+        elif [[ "$ID" == "centos" || "$ID" == "rhel" ]]; then
+            echo "Detected CentOS/RHEL. Installing python3..."
+            sudo yum install -y python3
+        elif [[ "$ID" == "fedora" ]]; then
+            echo "Detected Fedora. Installing python3..."
+            sudo dnf install -y python3
+        elif [[ "$ID" == "arch" ]]; then
+            echo "Detected Arch Linux. Installing python..."
+            sudo pacman -S --noconfirm python
+        else
+            echo "Unsupported distribution: $ID"
+            exit 1
+        fi
+    else
+        echo "Cannot determine the OS. Exiting script."
+        exit 1
+    fi
+
+    if python3 -m venv --help >/dev/null 2>&1; then
+        echo "venv is now available."
+    else
+        echo "Failed to install venv. Please check the installation."
+        exit 1
+    fi
+fi
+
 # CREATE VENV
 mkdir $HOME/.sshs
 python3 -m venv $HOME/.sshs/venv
